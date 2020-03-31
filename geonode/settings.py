@@ -465,7 +465,12 @@ INSTALLED_APPS = (
 
     # GeoNode
     'geonode',
+
+    # CAS
+    'django_cas_ng',
+
 )
+
 
 if 'postgresql' in DATABASE_URL or 'postgis' in DATABASE_URL:
     INSTALLED_APPS += ('django_celery_beat',)
@@ -648,6 +653,9 @@ MIDDLEWARE_CLASSES = (
     # django-oauth-toolkit.
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
+
+    # CAS
+    'django_cas_ng.middleware.CASMiddleware',
 )
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
@@ -677,8 +685,10 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = ast.literal_eval(os.environ.get('SECURE_HSTS_IN
 AUTHENTICATION_BACKENDS = (
     'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend',
     'guardian.backends.ObjectPermissionBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
+
 )
 
 if 'announcements' in INSTALLED_APPS:
@@ -830,9 +840,14 @@ LOGOUT_URL = os.getenv('LOGOUT_URL', '{}account/logout/'.format(SITEURL))
 ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
 
+# CAS settings
+CAS_SERVER_URL = 'https://186.46.236.6:8443/cas/login'
+CAS_VERIFY_SSL_CERTIFICATE = False
+CAS_VERSION = 'CAS_2_SAML_1_0'
+
 # Backend
-DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'geonode')
-CASCADE_WORKSPACE = os.getenv('CASCADE_WORKSPACE', 'geonode')
+DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'siim')
+CASCADE_WORKSPACE = os.getenv('CASCADE_WORKSPACE', 'siim')
 
 OGP_URL = os.getenv('OGP_URL', "http://geodata.tufts.edu/solr/select")
 
@@ -882,7 +897,7 @@ OGC_SERVER_DEFAULT_USER = os.getenv(
 )
 
 OGC_SERVER_DEFAULT_PASSWORD = os.getenv(
-    'GEOSERVER_ADMIN_PASSWORD', 'geoserver'
+    'GEOSERVER_ADMIN_PASSWORD', '(chambo)g.lg6'
 )
 
 GEOFENCE_SECURITY_ENABLED = False if TEST and not INTEGRATION else ast.literal_eval(os.getenv('GEOFENCE_SECURITY_ENABLED', 'True'))
@@ -1361,7 +1376,7 @@ To enable the GeoExt based Client:
 2. add 'geoexplorer' to INSTALLED_APPS
 3. enable those:
 """
-# GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = 'geoext'  # DEPRECATED use HOOKSET instead
+GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = 'geoext'  # DEPRECATED use HOOKSET instead
 if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'geoext':
     GEONODE_CLIENT_HOOKSET = os.getenv('GEONODE_CLIENT_HOOKSET', 'geonode.client.hooksets.GeoExtHookSet')
 
@@ -1440,7 +1455,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'leaflet':
 
     CORS_ORIGIN_WHITELIST = (
         HOSTNAME
-    )
+     )
 
 LEAFLET_CONFIG = {
     'TILES': [
@@ -1650,7 +1665,7 @@ FREETEXT_KEYWORDS_READONLY = ast.literal_eval(os.environ.get('FREETEXT_KEYWORDS_
 
 # notification settings
 NOTIFICATION_ENABLED = ast.literal_eval(os.environ.get('NOTIFICATION_ENABLED', 'True')) or TEST
-#PINAX_NOTIFICATIONS_LANGUAGE_MODEL = "people.Profile"
+PINAX_NOTIFICATIONS_LANGUAGE_MODEL = "people.Profile"
 
 # notifications backends
 _EMAIL_BACKEND = "geonode.notifications_backend.EmailBackend"

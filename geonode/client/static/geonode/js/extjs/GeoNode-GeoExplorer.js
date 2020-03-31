@@ -174,6 +174,7 @@ Ext.preg(GeoNode.plugins.Save.prototype.ptype, GeoNode.plugins.Save);
  *    Plugin for showing hyperlinks for going to the list of maps as well as
  *    going to the current saved map.
  */
+
 GeoNode.plugins.SaveHyperlink = Ext.extend(gxp.plugins.Tool, {
 
     /** api: ptype = gn_savehyperlink */
@@ -187,7 +188,7 @@ GeoNode.plugins.SaveHyperlink = Ext.extend(gxp.plugins.Tool, {
         this.titleTemplate = new Ext.Template("<a class='maplist' href='" +
             this.target.rest + "'>Maps</a> / <strong>{title}");
         this.target.on("save", function(id) {
-            this.actions[0].update(this.getMapTitle());
+           this.actions[0].update(this.getMapTitle());
         }, this);
     },
 

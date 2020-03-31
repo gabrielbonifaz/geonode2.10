@@ -30,6 +30,8 @@ from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import javascript_catalog
 from django.contrib.sitemaps.views import sitemap
 
+import django_cas_ng.views
+
 import geonode.proxy.urls
 from . import views
 from . import version
@@ -134,6 +136,11 @@ urlpatterns += [
     url(r'^messages/', include('user_messages.urls')),
     url(r'^social/', include('geonode.social.urls')),
     url(r'^security/', include('geonode.security.urls')),
+
+    # CAS 
+    url(r'^cas/login$', django_cas_ng.views.login, name='cas_ng_login'),
+    url(r'^cas/logout$', django_cas_ng.views.logout, name='cas_ng_logout'),
+    url(r'^cas/callback$', django_cas_ng.views.callback, name='cas_ng_proxy_callback'),
 
     # Accounts
     url(r'^account/ajax_login$',
